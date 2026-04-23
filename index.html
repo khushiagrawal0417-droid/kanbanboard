@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Kanban Board</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f5f7;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      text-align: center;
+      padding: 20px;
+    }
+
+    .board {
+      display: flex;
+      justify-content: space-around;
+      padding: 20px;
+    }
+
+    .column {
+      background: #e2e4e6;
+      border-radius: 8px;
+      width: 30%;
+      padding: 10px;
+    }
+
+    .column h2 {
+      text-align: center;
+    }
+
+    .task {
+      background: white;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      cursor: grab;
+    }
+
+    .add-task {
+      display: flex;
+      margin-top: 10px;
+    }
+
+    .add-task input {
+      flex: 1;
+      padding: 5px;
+    }
+
+    .add-task button {
+      padding: 5px 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Kanban Board</h1>
+
+<div class="board">
+  <div class="column" id="todo" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h2>To Do</h2>
+    <div class="add-task">
+      <input type="text" id="todo-input" placeholder="Add task">
+      <button onclick="addTask('todo')">Add</button>
+    </div>
+  </div>
+
+  <div class="column" id="in-progress" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h2>In Progress</h2>
+  </div>
+
+  <div class="column" id="done" ondrop="drop(event)" ondragover="allowDrop(event)">
+    <h2>Done</h2>
+  </div>
+</div>
+
+<script>
+  let taskId = 0;
+
+  function addTask(columnId) {
+    const input = document.getElementById(columnId + '-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const task = document.createElement('div');
+    task.className = 'task';
+    task.id = 'task-' + taskId++;
+    task.draggable = true;
+    task.ondragstart = drag;
+    task.innerText = text;
+
+    document.getElementById(columnId).appendChild(task);
+    input.value = '';
+  }
+
+  function allowDrop(ev) {
+    ev.preventDefault();
+  }
+
+  function drag(ev) {
+    ev.dataTransfer.setData('text', ev.target.id);
+  }
+
+  function drop(ev) {
+    ev.preventDefault();
+    const data = ev.dataTransfer.getData('text');
+    const task = document.getElementById(data);
+    ev.currentTarget.appendChild(task);
+  }
+</script>
+
+</body>
+</html>
