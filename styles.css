@@ -1,4 +1,183 @@
-.kanban { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; padding: 20px; }
-.col { background: #f0f2f5; border-radius: 10px; padding: 15px; min-height: 400px; }
-.items { min-height: 50px; }
-.card { background: white; margin: 10px 0; padding: 10px; border-radius: 5px; cursor: move; border-left: 5px solid #007bff; }
+/* 1. Variables & Root Setup */
+:root {
+    --bg-gray: #f4f7f9;
+    --column-bg: #ebedf0;
+    --card-bg: #ffffff;
+    
+    /* Branding Colors */
+    --primary-blue: #2563eb;
+    --accent-todo: #f59e0b;   /* Amber */
+    --accent-doing: #3b82f6;  /* Blue */
+    --accent-done: #10b981;   /* Emerald */
+    
+    /* Typography */
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --font-stack: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 2. Global Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-stack);
+    background-color: var(--bg-gray);
+    color: var(--text-main);
+    line-height: 1.5;
+    padding: 2rem;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    font-weight: 800;
+    color: #0f172a;
+}
+
+/* 3. Input Section */
+.input-container {
+    max-width: 500px;
+    margin: 0 auto 3rem auto;
+    display: flex;
+    gap: 0.75rem;
+}
+
+#taskInput {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#taskInput:focus {
+    outline: none;
+    border-color: var(--primary-blue);
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.add-btn {
+    background-color: var(--primary-blue);
+    color: white;
+    border: none;
+    padding: 0 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.add-btn:active {
+    transform: scale(0.95);
+}
+
+/* 4. Kanban Board Layout */
+.board {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+    overflow-x: auto; /* Handles smaller screens */
+    padding-bottom: 1rem;
+}
+
+.column {
+    background-color: var(--column-bg);
+    min-width: 320px;
+    width: 320px;
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    max-height: 80vh;
+}
+
+.column h3 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.column h3::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+/* Status-specific Indicators */
+#todo-col h3::before { background-color: var(--accent-todo); }
+#doing-col h3::before { background-color: var(--accent-doing); }
+#done-col h3::before { background-color: var(--accent-done); }
+
+/* 5. Task Cards */
+.task-list {
+    flex: 1;
+    min-height: 100px;
+    overflow-y: auto;
+}
+
+.card {
+    background: var(--card-bg);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: grab;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.card.dragging {
+    opacity: 0.4;
+    cursor: grabbing;
+}
+
+.delete-task {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    font-size: 1.25rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.delete-task:hover {
+    color: #ef4444;
+}
+
+/* 6. Drag Utilities */
+.drag-over {
+    background-color: #cbd5e1;
+    outline: 2px dashed #94a3b8;
+    border-radius: 8px;
+}
+
+/* 7. Responsive Adjustments */
+@media (max-width: 768px) {
+    .board {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .column {
+        width: 100%;
+        min-width: unset;
+    }
+}
